@@ -72,20 +72,29 @@ function NameGenerator (options, seed) {
 
         for (var i = 0; i < length; i++) {
             // first letter
-            if (i === 0) {
-                switch (generator.intBetween(0, options.prefixes.length > 0 ? 2 : 1))
+            if (i === 0) {  
+                switch (generator.intBetween(0, 2))
                 {
-                    case 0: addOneOf(options.firstLetterPreference); 
-                        break;
-                    case 1: addRandomLetter(); 
-                        break;
-                    case 2: 
-                        var prefix = getRandomItem(options.prefixes, generator);
-
-                        for (var j = 0; j < prefix.length; j++) {
-                            addLetter(prefix[j]);
-                            i++;
+                    case 0: 
+                        if (options.firstLetterPreference.length > 0) {
+                            addOneOf(options.firstLetterPreference);
+                            break;
                         }
+                    case 1: 
+                        if (options.prefixes.length > 0) {
+                            var prefix = getRandomItem(options.prefixes, generator);
+
+                            for (var j = 0; j < prefix.length; j++) {
+                                addLetter(prefix[j]);
+                                i++;
+                            }
+                            break;
+                        }
+                    case 2: 
+                        if (generator.random() < options.startWithVowelChance)
+                            addOneOf(options.vowels);
+                        else
+                            addOneOf(options.consonants);                                         
                         break;                        
                 }
             } 
@@ -99,10 +108,12 @@ function NameGenerator (options, seed) {
             // just letter
             else {
                 // Add postfix and end name
-                if (options.postfixes.length > 0 && generator.random() < 0.3) {
+                if (options.postfixes.length > 0 && generator.random() < 0.2) {
                     var postfix = getRandomItem(options.postfixes, generator);
 
-                    if (!isVowel(postfix[0]) && !isVowel(prevLetter)) 
+                    if (isVowel(postfix[0]) && isVowel(prevLetter))
+                        addOneOf(options.consonants);
+                    else if (!isVowel(postfix[0]) && !isVowel(prevLetter)) 
                         addOneOf(options.vowels);
 
                     for (var j = 0; j < postfix.length; j++) {
@@ -118,7 +129,7 @@ function NameGenerator (options, seed) {
             
         }
 
-        if (totalVowels === 0 || result.length > options.maxSize) 
+        if (totalVowels === 0 || result.length > options.maxSize || result.length < options.minSize) 
             return self.get();
 
         result[0] = result[0].toUpperCase();
