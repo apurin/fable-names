@@ -1,9 +1,9 @@
 var RandomSeed = require('random-seed');
 
-function NameGenerator (options, seed) {
+function WordGenerator (options, seed) {
     var self = this;
 
-    options = NameGenerator.normalizeOptions(options);
+    options = WordGenerator.normalizeOptions(options);
 
     var generator = new RandomSeed(seed);    
 
@@ -162,7 +162,7 @@ function getRandomItem(array, generator) {
     return array[generator.intBetween(0, array.length - 1)];
 }
 
-NameGenerator.normalizeOptions = function (givenOptions) {
+WordGenerator.normalizeOptions = function (givenOptions) {
     options = givenOptions ? JSON.parse(JSON.stringify(givenOptions)) : {};
 
     // Assign defaults where needed
@@ -260,9 +260,9 @@ var randomPostfixes = [
     ["y", "ycz", "yk", "ynas", "ysz", "za", "zadeh", "zada", "zadegan"]
 ];
 
-NameGenerator.getRandomOptions = function (seed, options) {    
+WordGenerator.getRandomOptions = function (seed, options) {    
     var generator = RandomSeed.create(seed); // seeded random
-    options = NameGenerator.normalizeOptions(options); 
+    options = WordGenerator.normalizeOptions(options); 
 
     var chanceToKeepDefaults = 0.3;
 
@@ -293,4 +293,4 @@ NameGenerator.getRandomOptions = function (seed, options) {
     return options;
 };
 
-module.exports = NameGenerator;
+module.exports = WordGenerator;

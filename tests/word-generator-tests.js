@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var NameGenerator = require('../name-generator.js');
+var WordGenerator = require('../word-generator.js');
 
 describe('general', function () {
 //    it('test', function() {  
@@ -13,9 +13,9 @@ describe('general', function () {
 //        };
 //
 //
-//        var familyName = new NameGenerator(NameGenerator.getRandomOptions(undefined, localSpecific));
-//        var firstMaleName = new NameGenerator(NameGenerator.getRandomOptions(undefined, localSpecific));
-//        var firstFemaleName = new NameGenerator(NameGenerator.getRandomOptions(undefined, localSpecific));
+//        var familyName = new WordGenerator(WordGenerator.getRandomOptions(undefined, localSpecific));
+//        var firstMaleName = new WordGenerator(WordGenerator.getRandomOptions(undefined, localSpecific));
+//        var firstFemaleName = new WordGenerator(WordGenerator.getRandomOptions(undefined, localSpecific));
 //
 //        
 //        for (var i = 0; i < 30; i++) {
@@ -32,7 +32,7 @@ describe('general', function () {
 //            excludeLetters: 'jxqzy'
 //        };
 //
-//        var myGenerator = new NameGenerator(myoptions);
+//        var myGenerator = new WordGenerator(myoptions);
 //
 //        for (var i = 0; i < 30; i++) {
 //            console.log(myGenerator.get() + " " + myGenerator.get());

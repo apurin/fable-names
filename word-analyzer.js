@@ -17,58 +17,118 @@ function WordAnalyzer (words) {
         words = fixInput(words);        
 
         var result = {
-            letters: {},
             syllables: {},
             prefixes: {},
             postfixes: {}
-        }
+        }        
 
+        // find syllables
         for (var i = 0; i < words.length; i++) {
             var word = words[i];
-            for (let syllable of getSyllables(word)) {
-                if (syllable in syllables === false) 
-                    syllables[syllable] = 0;
-                syllables[syllable]++;
+            for (let syllable of WordAnalyzer.getSyllables(word, self.vowels)) {
+                if (syllable in result.syllables === false) 
+                    result.syllables[syllable] = 0;
+                result.syllables[syllable]++;
             }
         }
+
+        // find prefixes
+        for (var i = 0; i < words.length; i++) {
+            var word = words[i];
+            
+            for (var j = word.length - 1; j > 1; j--) { 
+                var prefix = word.substring(0, j);
+                if (prefix in result.prefixes) continue;
+
+                var prefixCount = 1;
+
+                for (var x = 0; x < words.length; x++) {
+                    if (x === i) continue;                    
+                    var wordToCompare = words[x];
+
+                    if (wordToCompare.startsWith(prefix)) prefixCount++;                    
+                }
+
+                if (prefixCount > 1) result.prefixes[prefix] = prefixCount;                
+            }
+        }
+
+        // find postfixes
+        for (var i = 0; i < words.length; i++) {
+            var word = words[i];
+            
+            for (var j = 1; j < word.length - 1; j++) { 
+                var postfix = word.substring(j);
+                if (postfix in result.postfixes) continue;
+
+                var postfixCount = 1;
+
+                for (var x = 0; x < words.length; x++) {
+                    if (x === i) continue;                    
+                    var wordToCompare = words[x];
+
+                    if (wordToCompare.endsWith(postfix)) postfixCount++;                    
+                }
+
+                if (postfixCount > 1) 
+                    result.postfixes[postfix] = postfixCount;                
+            }
+        }
+
+
+
+        return result;
     }
-
-
 
     if (words !== undefined) return self.analyze(words);
 }
 
-function hasMoreVowels (word, after, vowels) {
-    for (var i = after + 1; i < word.length; i++) 
-        if (vowels.indexOf(word[i]) !== -1) return true;
-    
-    return false;
-}
-
 WordAnalyzer.getSyllables = function* (word, vowels) {
+    function hasMoreVowels(after) {
+        for (var i = after + 1; i < word.length; i++) 
+            if (vowels.indexOf(word[i]) !== -1) return true;
+        
+        return false;
+    }
+    function followedByTwoConsonant(after) {
+        if (after + 2 >= word.length) return false;
+
+        return vowels.indexOf(word[after + 1]) === -1 && vowels.indexOf(word[after + 2]) === -1;
+    }
+
     word = word.toLowerCase();
-    var vowels = 0;
+
     var start = 0;
+
     for (var i = 0; i < word.length; i++) {
-        var isVowel = word.indexOf(word[i]) !== -1;
+        var isVowel = vowels.indexOf(word[i]) !== -1;
         if (isVowel) { 
-            vowels++;
-
-            if (!hasMoreVowels(word, i, vowels)) {
+            // no more vowels in the word
+            if (!hasMoreVowels(i)) {
                 i = word.length;
-                yield word.subscring(start);
+                yield word.substring(start);
+                break;
             }
-            if (vowels > 2) {
-                
-            }
-        }
 
-        // 
-        if (!isVowel) {
+            // closed syllable
+            if (followedByTwoConsonant(i)) {
+                yield word.substring(start, i + 2);
+                start = i + 2;
+                i++;
+            } 
+            // open syllable
+            else {
+                yield word.substring(start, i + 1);
+                start = i + 1;
+            }
+
             
         }
 
-                    
+        // End of word
+        if (i === word.length - 1) {
+            yield word.substring(start);
+        }                    
     }
 }  
 
