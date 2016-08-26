@@ -8,8 +8,12 @@ function WordAnalyzer (words) {
 
     var fixInput = function (input) {
         input = input ? input : [];
-        input = typeof input === 'string' ? [input] : input;        
-        return input;
+        input = typeof input === 'string' ? [input] : input;
+        var result = new Array(input.length);
+        for (var i = 0; i < input.length; i++)
+            result[i] = input[i].toLowerCase();
+        
+        return result;
     }
 
 
@@ -38,7 +42,7 @@ function WordAnalyzer (words) {
             
             for (var j = word.length - 1; j > 1; j--) { 
                 var prefix = word.substring(0, j);
-                if (prefix in result.prefixes) continue;
+                if (prefix in result.prefixes) break;
 
                 var prefixCount = 1;
 
@@ -49,7 +53,10 @@ function WordAnalyzer (words) {
                     if (wordToCompare.startsWith(prefix)) prefixCount++;                    
                 }
 
-                if (prefixCount > 1) result.prefixes[prefix] = prefixCount;                
+                if (prefixCount > 2) {
+                    result.prefixes[prefix] = prefixCount;
+                    break;
+                }                
             }
         }
 
@@ -74,13 +81,31 @@ function WordAnalyzer (words) {
                     result.postfixes[postfix] = postfixCount;                
             }
         }
-
-
+        result.syllables = WordAnalyzer.makeWeighted(result.syllables);
+        result.postfixes = WordAnalyzer.makeWeighted(result.postfixes);
+        result.prefixes = WordAnalyzer.makeWeighted(result.prefixes);        
 
         return result;
     }
 
     if (words !== undefined) return self.analyze(words);
+}
+
+WordAnalyzer.makeWeighted = function (dict) {
+    var max = 0;
+
+    for (var key in dict) {
+        var occurances = dict[key];
+        if (occurances > max) max = occurances;        
+    }
+
+    var result = {};
+    for (var key in dict) {
+        var probability = max !== 0 ? dict[key] / max : 0;
+        result[key] = Math.round(probability * 100) / 100;
+    }
+
+    return result;
 }
 
 WordAnalyzer.getSyllables = function* (word, vowels) {
