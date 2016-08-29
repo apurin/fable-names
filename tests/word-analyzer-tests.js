@@ -7,8 +7,8 @@ var romanNames = ["AELIA", "AELIANA", "AELIANUS", "AELIUS", "AEMILIA", "AEMILIAN
 
 describe('WordAnalyzer.makeWeighted', function () {
     it('simple', function() {
-        assert.deepEqual({'a': 0, 'b': 0.5, 'c': 1}, WordAnalyzer.makeWeighted({'a': 0, 'b': 50, 'c': 100}));
-        assert.deepEqual({'a': 0, 'b': 0.5, 'c': 1}, WordAnalyzer.makeWeighted({'a': 0, 'b': 100, 'c': 200}));
+        assert.deepEqual({'a': 0, 'b': 0.333, 'c': 0.667}, WordAnalyzer.makeWeighted({'a': 0, 'b': 50, 'c': 100}));
+        assert.deepEqual({'a': 0, 'b': 0.333, 'c': 0.667}, WordAnalyzer.makeWeighted({'a': 0, 'b': 100, 'c': 200}));
     });
     it('empty', function() {
         assert.deepEqual({}, WordAnalyzer.makeWeighted({}));
@@ -23,13 +23,15 @@ describe('WordAnalyzer.analyze', function () {
     var analyzer = new WordAnalyzer();
 
     it('count syllables', function() {  
-        assert.deepEqual({ "as": 1, "das": 1, "ba": 2, "zar": 2, "co": 1 }, analyzer.analyze(["asdasba", "bazar", "cozar"]).syllables);
+        assert.deepEqual({ "as": 0.143, "das": 0.143, "ba": 0.286, "zar": 0.286, "co": 0.143 }, analyzer.analyze(["asdasba", "bazar", "cozar"]).syllables);
     });
     it('count prefixes', function() {  
-        assert.deepEqual( { "ga": 3 }, analyzer.analyze(["gazebo", "gaz", "garda", "kinza"]).prefixes);
+        assert.deepEqual( { "ga": 1 }, analyzer.analyze(["gazebo", "gaz", "garda", "kinza"]).prefixes);
     });
     it('count postfixes', function() {  
-        assert.deepEqual( { "atov": 2, "ov": 2, "ova": 3, "tov": 2, "va": 3 }, analyzer.analyze(["gratov", "simonova", "kuibeshev", "sova", "kritova", "satov"]).postfixes);
+        
+        assert.deepEqual( { "atov": 0.167, "ov": 0.167, "ova": 0.25, "tov": 0.167, "va": 0.25 }, 
+            analyzer.analyze(["gratov", "simonova", "kuibeshev", "sova", "kritova", "satov"]).postfixes);
     });
     it('roman names', function() {  
         var result = analyzer.analyze(romanNames);

@@ -92,17 +92,15 @@ function WordAnalyzer (words) {
 }
 
 WordAnalyzer.makeWeighted = function (dict) {
-    var max = 0;
+    var total = 0;
 
-    for (var key in dict) {
-        var occurances = dict[key];
-        if (occurances > max) max = occurances;        
-    }
+    for (var key in dict) 
+        total += dict[key]; 
 
     var result = {};
     for (var key in dict) {
-        var probability = max !== 0 ? dict[key] / max : 0;
-        result[key] = Math.round(probability * 100) / 100;
+        var probability = total !== 0 ? dict[key] / total : 0;
+        result[key] = Math.round(probability * 1000) / 1000;
     }
 
     return result;
