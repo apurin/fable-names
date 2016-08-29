@@ -109,7 +109,7 @@ WordAnalyzer.makeWeighted = function (dict) {
     var result = {};
     for (var key in dict) {
         var probability = total !== 0 ? dict[key] / total : 0;
-        result[key] = Math.round(probability * 1000) / 1000;
+        result[key] = probability;
     }
 
     return result;
