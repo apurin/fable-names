@@ -23,8 +23,17 @@ function WordAnalyzer (words) {
         var result = {
             syllables: {},
             prefixes: {},
-            postfixes: {}
-        }        
+            postfixes: {},
+            minSize: words.length > 0 ? words[0].length : 0,
+            maxSize: 0
+        }  
+
+        // words' sizes
+        for (var i = 0; i < words.length; i++) {
+            var word = words[i];
+            if (word.length > result.maxSize) result.maxSize = word.length;
+            if (word.length < result.minSize) result.minSize = word.length;
+        }
 
         // find syllables
         for (var i = 0; i < words.length; i++) {

@@ -14,3 +14,5 @@ FableNames.prototype.getRandomOptions = function (seed) {
 FableNames.prototype.get = function () {
     
 }
+
+module.exports = FableNames;
