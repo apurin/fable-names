@@ -1,12 +1,10 @@
-"use strict"
-function WordAnalyzer (words) {
-    var self = this instanceof WordAnalyzer 
-        ? this
-        : {};
+ "use strict"
+ 
+ function Analyzer(vowels) {
+    this.vowels = vowels ? vowels : "eyuioa".split("");
+    this.vowels = typeof this.vowels === 'string' ? this.vowels.split("") : this.vowels;
 
-    self.vowels = 'eyuioa'.split('');
-
-    var fixInput = function (input) {
+    var fixWords = function (input) {
         input = input ? input : [];
         input = typeof input === 'string' ? [input] : input;
         var result = new Array(input.length);
@@ -16,9 +14,8 @@ function WordAnalyzer (words) {
         return result;
     }
 
-
-    self.analyze = function (words) {
-        words = fixInput(words);        
+    this.analyze = function (words) {
+        words = fixWords(words);        
 
         var result = {
             syllables: {},
@@ -38,7 +35,7 @@ function WordAnalyzer (words) {
         // find syllables
         for (var i = 0; i < words.length; i++) {
             var word = words[i];
-            for (let syllable of WordAnalyzer.getSyllables(word, self.vowels)) {
+            for (let syllable of Analyzer.getSyllables(word, this.vowels)) {
                 if (syllable in result.syllables === false) 
                     result.syllables[syllable] = 0;
                 result.syllables[syllable]++;
@@ -62,7 +59,7 @@ function WordAnalyzer (words) {
                     if (wordToCompare.startsWith(prefix)) prefixCount++;                    
                 }
 
-                if (prefixCount > 2) {
+                if (prefixCount > 1) {
                     result.prefixes[prefix] = prefixCount;
                     break;
                 }                
@@ -90,17 +87,15 @@ function WordAnalyzer (words) {
                     result.postfixes[postfix] = postfixCount;                
             }
         }
-        result.syllables = WordAnalyzer.makeWeighted(result.syllables);
-        result.postfixes = WordAnalyzer.makeWeighted(result.postfixes);
-        result.prefixes = WordAnalyzer.makeWeighted(result.prefixes);        
+        result.syllables = Analyzer.makeWeighted(result.syllables);
+        result.postfixes = Analyzer.makeWeighted(result.postfixes);
+        result.prefixes = Analyzer.makeWeighted(result.prefixes);        
 
         return result;
     }
-
-    if (words !== undefined) return self.analyze(words);
 }
 
-WordAnalyzer.makeWeighted = function (dict) {
+Analyzer.makeWeighted = function (dict) {
     var total = 0;
 
     for (var key in dict) 
@@ -115,7 +110,7 @@ WordAnalyzer.makeWeighted = function (dict) {
     return result;
 }
 
-WordAnalyzer.getSyllables = function* (word, vowels) {
+Analyzer.getSyllables = function* (word, vowels) {
     function hasMoreVowels(after) {
         for (var i = after + 1; i < word.length; i++) 
             if (vowels.indexOf(word[i]) !== -1) return true;
@@ -152,9 +147,7 @@ WordAnalyzer.getSyllables = function* (word, vowels) {
             else {
                 yield word.substring(start, i + 1);
                 start = i + 1;
-            }
-
-            
+            }            
         }
 
         // End of word
@@ -162,6 +155,6 @@ WordAnalyzer.getSyllables = function* (word, vowels) {
             yield word.substring(start);
         }                    
     }
-}  
+}
 
-module.exports = WordAnalyzer;
+module.exports = Analyzer;
