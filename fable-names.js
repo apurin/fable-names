@@ -1,8 +1,8 @@
 "use strict"
 
 var Analyzer = require('./analyzer.js');
-
-var RandomSeed = require('random-seed');
+var OptionsGenerator = require('./options-generator.js');
+var Helpers = require('./helpers.js');
 
 function FableNames (options) {
     this.options = this.fixOptions(options);
@@ -10,6 +10,7 @@ function FableNames (options) {
 }
 
 FableNames.Analyzer = Analyzer;
+FableNames.OptionsGenerator = OptionsGenerator;
 
 FableNames.prototype.fixOptions = function (options) {
     var result = {};
@@ -37,7 +38,6 @@ FableNames.prototype.fixOptions = function (options) {
     
     return result;
 }
-
 
 function getRandomWeighted(weightedDict) {
     var random = Math.random();
@@ -84,35 +84,10 @@ FableNames.prototype.get = function () {
         prevSyllable = newSyllable;
     } while (result.length + postfix.length < targetLength);
 
-    result += postfix;    
+    result += postfix;   
 
-    var prevLetter = result[0];
-    var isVowel = (letter) => this.options.vowels.indexOf(letter) !== -1;
-    
-    for (var i = 1; i < result.length; i++) {
-        var letter = result[i];
-
-        // repeating letters
-        if (prevLetter === letter) {
-            if (Math.random() > this.options.repeatingLetters)
-                return this.get();
-            else 
-                continue;
-        }
-
-        var prevIsVowel = isVowel(prevLetter);
-        var thisIsVowel = isVowel(letter);
-
-        // two vowels
-        if (prevIsVowel && thisIsVowel && Math.random() > this.options.twoVowels) 
-            return this.get();
-
-        // two consonants
-        if (!prevIsVowel && !thisIsVowel && Math.random() > this.options.twoConsonants) 
-            return this.get();        
-
-        prevLetter = letter;
-    }
+    if (!Helpers.checkWord(result, this.options.vowels, this.options.repeatingLetters, this.options.twoVowels, this.options.twoConsonants))
+        return this.get();
 
     // wrong size
     if (result.length < this.options.minSize || result.length > this.options.maxSize) 
