@@ -9,10 +9,13 @@ var russianNames = ["Авдей", "Авксентий", "Агафон", "Але�
 describe('FableNames.get', function () {
     it('with options', function() {
         var analyzer = new FableNames.Analyzer("ауоыиэяюёе");
+        var russinaNameOptions = analyzer.analyze(russianNames);
+        russinaNameOptions.forbiddenPattern = /^[ъьйы]|ю.*ю|я.*я|э.*э|[ауоыиэяюёе]ь|й[ауоыиэяюёе]|йь/i;
+        russinaNameOptions.verifyRules = (word, options) => true;
 
-        var russianName = new FableNames(analyzer.analyze(russianNames));
+        var russianNameGenerator = new FableNames(russinaNameOptions);        
 
-        for (var i = 0; i < 10; i++) 
-            console.log(russianName.get());        
+        for (var i = 0; i < 100; i++) 
+            console.log(russianNameGenerator.get());        
     });
 });

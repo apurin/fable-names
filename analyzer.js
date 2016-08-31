@@ -22,7 +22,8 @@
             prefixes: {},
             postfixes: {},
             minSize: words.length > 0 ? words[0].length : 0,
-            maxSize: 0
+            maxSize: 0,
+            vowels: this.vowels
         }  
 
         // words' sizes
