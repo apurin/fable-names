@@ -6,6 +6,7 @@ var RandomSeed = require('random-seed');
 
 function FableNames (options) {
     this.options = this.fixOptions(options);
+    this.iterations = 0;
 }
 
 FableNames.Analyzer = Analyzer;
@@ -19,7 +20,7 @@ FableNames.prototype.fixOptions = function (options) {
     result.maxSize = options.maxSize ? options.maxSize : result.minSize * 6;
     result.prefixProbability = options.prefixProbability ? options.prefixProbability : 0.5;
     result.postfixProbability = options.postfixProbability ? options.postfixProbability : 0.8;
-    result.repeatingSyllables = options.repeatingSyllables ? options.repeatingSyllables : 0;
+    result.repeatingSyllables = options.repeatingSyllables ? options.repeatingSyllables : 0.2;
     result.repeatingLetters = options.repeatingLetters ? options.repeatingLetters : 0.2;
     result.twoVowels = options.twoVowels ? options.twoVowels : 0.3;
     result.twoConsonants = options.twoConsonants ? options.twoConsonants : 0.3;    
@@ -50,6 +51,9 @@ function getRandomWeighted(weightedDict) {
 }
 
 FableNames.prototype.get = function () {
+    this.iterations++;
+    if (this.iterations > 200) throw new Error("It is impossible to match given rules, please review options.verifyRules, options.forbiddenPattern or try to add more syllables");
+
     var result = "";
     
     // Add prefix
@@ -68,7 +72,7 @@ FableNames.prototype.get = function () {
 
     do {
         iterations++;
-        if (iterations > 200) throw "It is hard to find matching syllables, either provide more syllables or increase options.maxLength, and options.twoVowels, options.twoConsonants probabilities";
+        if (iterations > 200) throw new Error("It is hard to find matching syllables, either provide more syllables or increase options.maxLength, and options.twoVowels, options.twoConsonants probabilities");
 
         var newSyllable = getRandomWeighted(this.options.syllables);
 
@@ -112,7 +116,14 @@ FableNames.prototype.get = function () {
 
     // wrong size
     if (result.length < this.options.minSize || result.length > this.options.maxSize) 
-        return this.get();
+        return this.get();    
+
+    // capitalize
+    if (this.options.capitalize) {
+        result = result.split("");
+        result[0] = result[0].toUpperCase();
+        result = result.join("");
+    }
 
     // verification predicate
     if (this.options.verifyRules && !this.options.verifyRules(result, this.options))
@@ -122,13 +133,7 @@ FableNames.prototype.get = function () {
     if (this.options.forbiddenPattern && result.match(this.options.forbiddenPattern))
         return this.get();
 
-    // capitalize
-    if (this.options.capitalize) {
-        result = result.split("");
-        result[0] = result[0].toUpperCase();
-        result = result.join("");
-    }
-
+    this.iterations = 0;
     return result;
 }
 

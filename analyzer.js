@@ -23,8 +23,38 @@
             postfixes: {},
             minSize: words.length > 0 ? words[0].length : 0,
             maxSize: 0,
-            vowels: this.vowels
-        }  
+            vowels: this.vowels,
+            repeatingLetters: 0,
+            twoVowels: 0,
+            twoConsonants: 0
+        }
+
+        // Doubles
+        var doubleCount = 0;
+        var twoVowelCount = 0;
+        var twoConsonantCount = 0; 
+        var totalLetters = 0;
+        var isVowel = (letter) => this.vowels.indexOf(letter) !== -1;
+        for (var index in words) {
+            var word = words[index];
+            totalLetters += word.length;
+
+            var prevLetter = word[0];
+            for (var i = 1; i < word.length; i++) {
+                var letter = word[i];
+
+                if (prevLetter === letter) doubleCount++;
+
+                var prevIsVowel = isVowel(prevLetter);
+                var thisIsVowel = isVowel(letter);
+
+                if (prevIsVowel && thisIsVowel) twoVowelCount++;
+                if (!prevIsVowel && !thisIsVowel) twoConsonantCount++;
+            }
+        }
+        result.repeatingLetters = doubleCount / totalLetters;
+        result.twoVowels = twoVowelCount / totalLetters;
+        result.twoConsonants = twoConsonantCount / totalLetters;
 
         // words' sizes
         for (var i = 0; i < words.length; i++) {

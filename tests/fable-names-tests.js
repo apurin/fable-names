@@ -8,14 +8,24 @@ var russianNames = ["Авдей", "Авксентий", "Агафон", "Але�
 
 describe('FableNames.get', function () {
     it('with options', function() {
+        var names = [];
+
+        // analyze russian names
         var analyzer = new FableNames.Analyzer("ауоыиэяюёе");
         var russinaNameOptions = analyzer.analyze(russianNames);
+
+        // forbid few patterns
         russinaNameOptions.forbiddenPattern = /^[ъьйы]|ю.*ю|я.*я|э.*э|[ауоыиэяюёе]ь|й[ауоыиэяюёе]|йь/i;
-        russinaNameOptions.verifyRules = (word, options) => true;
+
+        // create only unique names
+        russinaNameOptions.verifyRules = (word, options) => names.indexOf(word) === -1;
 
         var russianNameGenerator = new FableNames(russinaNameOptions);        
 
-        for (var i = 0; i < 100; i++) 
-            console.log(russianNameGenerator.get());        
+        for (var i = 0; i < 100; i++) {
+            var name = russianNameGenerator.get();
+            console.log(name);   
+            names.push(name);
+        }     
     });
 });
