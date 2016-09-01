@@ -6,7 +6,21 @@ var Helpers = require('./helpers.js');
 
 function FableNames (options) {
     this.options = this.fixOptions(options);
-    this.iterations = 0;
+    this.failedAttempts = {
+        count: 0,
+        max: 300,
+        forbiddenPattern: 0,
+        wrongSize: 0,
+        verifyRules: 0,
+        checkWord: 0
+    }
+    this.onAttemptSucceeded = function () {
+        this.failedAttempts.count = 0;
+        this.failedAttempts.forbiddenPattern = 0;
+        this.failedAttempts.wrongSize = 0;
+        this.failedAttempts.verifyRules = 0;
+        this.failedAttempts.checkWord = 0;
+    }
 }
 
 FableNames.Analyzer = Analyzer;
@@ -51,8 +65,14 @@ function getRandomWeighted(weightedDict) {
 }
 
 FableNames.prototype.get = function () {
-    this.iterations++;
-    if (this.iterations > 200) throw new Error("It is impossible to match given rules, please review options.verifyRules, options.forbiddenPattern or try to add more syllables");
+    this.failedAttempts.count ++;
+
+    if (this.failedAttempts.count > this.failedAttempts.max) 
+        throw new Error("It is impossible to match given rules, here are resons why attempts failed:\r\n" + 
+            "Can't fit proper size: " + this.failedAttempts.wrongSize + "\r\n" + 
+            "Matches forbidden pattern: " + this.failedAttempts.forbiddenPattern + "\r\n" + 
+            "Can't pass verification rule: " + this.failedAttempts.verifyRules + "\r\n" + 
+            "Contains forbidden doubles, or two vowels/consonants: " + this.failedAttempts.checkWord + "\r\n");
 
     var result = "";
     
@@ -86,12 +106,16 @@ FableNames.prototype.get = function () {
 
     result += postfix;   
 
-    if (!Helpers.checkWord(result, this.options.vowels, this.options.repeatingLetters, this.options.twoVowels, this.options.twoConsonants))
+    if (!Helpers.checkWord(result, this.options.vowels, this.options.repeatingLetters, this.options.twoVowels, this.options.twoConsonants)) {
+        this.failedAttempts.checkWord++;
         return this.get();
+    }
 
     // wrong size
-    if (result.length < this.options.minSize || result.length > this.options.maxSize) 
-        return this.get();    
+    if (result.length < this.options.minSize || result.length > this.options.maxSize) {
+        this.failedAttempts.wrongSize++;
+        return this.get();        
+    } 
 
     // capitalize
     if (this.options.capitalize) {
@@ -101,14 +125,18 @@ FableNames.prototype.get = function () {
     }
 
     // verification predicate
-    if (this.options.verifyRules && !this.options.verifyRules(result, this.options))
+    if (this.options.verifyRules && !this.options.verifyRules(result, this.options)) {
+        this.failedAttempts.verifyRules++;
         return this.get();
+    }
 
     // forbidden pattern
-    if (this.options.forbiddenPattern && result.match(this.options.forbiddenPattern))
+    if (this.options.forbiddenPattern && result.match(this.options.forbiddenPattern)) {
+        this.failedAttempts.forbiddenPattern++;
         return this.get();
+    }
 
-    this.iterations = 0;
+    this.onAttemptSucceeded();
     return result;
 }
 
