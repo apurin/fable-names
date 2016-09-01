@@ -8,7 +8,7 @@ function FableNames (options) {
     this.options = this.fixOptions(options);
     this.failedAttempts = {
         count: 0,
-        max: 300,
+        max: 100,
         forbiddenPattern: 0,
         wrongSize: 0,
         verifyRules: 0,
@@ -72,7 +72,9 @@ FableNames.prototype.get = function () {
             "Can't fit proper size: " + this.failedAttempts.wrongSize + "\r\n" + 
             "Matches forbidden pattern: " + this.failedAttempts.forbiddenPattern + "\r\n" + 
             "Can't pass verification rule: " + this.failedAttempts.verifyRules + "\r\n" + 
-            "Contains forbidden doubles, or two vowels/consonants: " + this.failedAttempts.checkWord + "\r\n");
+            "Contains forbidden doubles, or two vowels/consonants: " + this.failedAttempts.checkWord + "\r\n" +
+            "Min size: " + this.options.minSize + "\r\n" + 
+            "Max size: " + this.options.maxSize + "\r\n");
 
     var result = "";
     

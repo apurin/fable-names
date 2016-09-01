@@ -37,7 +37,8 @@ function generateSyllables(options, consonants, generator) {
             var attempts = 0;
 
             do {
-                if (attempts++ > 50) return; // out of options
+                if (attempts++ > 50) 
+                    return; // out of options
 
                 newSyllable = "";
                 for (var i = 0; i < funcs.length; i++) 
@@ -52,10 +53,10 @@ function generateSyllables(options, consonants, generator) {
         }               
     }
 
-    addSyllable(generator.intBetween(0, options.vowels.length), [getV]);
+    addSyllable(generator.intBetween(Math.min(options.vowels.length, 3), options.vowels.length), [getV]);
     addSyllable(generator.intBetween(0, 3), [getV, getV]);
-    addSyllable(generator.intBetween(0, 25), [getC, getV]);
-    addSyllable(generator.intBetween(0, 25), [getV, getC]);
+    addSyllable(generator.intBetween(10, 25), [getC, getV]);
+    addSyllable(generator.intBetween(10, 25), [getV, getC]);
     addSyllable(generator.intBetween(0, 10), [getC, getV, getC]);
     addSyllable(generator.intBetween(0, 10), [getC, getC, getV]);
     addSyllable(generator.intBetween(0, 5), [getC, getC, getV, getC]);
@@ -67,7 +68,7 @@ function generateSyllables(options, consonants, generator) {
 function generateSuffixes(generator, maxSyllables, options, consonants) {
     var syllables = Object.keys(options.syllables);
     var suffixes = {};
-    var numberOfSuffixes = generator.intBetween(2, 5);
+    var numberOfSuffixes = generator.intBetween(5, 15);
 
     for (var i = 0; i < numberOfSuffixes; i++) {
         var suffix = "";
@@ -121,14 +122,14 @@ function OptionsGenerator (vowels, consonants) {
 
         var result = {};      
 
-        result.minSize = generator.intBetween(2, 4);
-        result.maxSize = result.minSize + generator.intBetween(result.minSize + 1, result.minSize * 2 + 2);
-        result.prefixProbability = generator.floatBetween(0.2, 1);
-        result.postfixProbability = generator.floatBetween(0.2, 1);
-        result.repeatingSyllables = generator.floatBetween(0.2, 1);
-        result.repeatingLetters = generator.floatBetween(0.3, 1);
-        result.twoVowels = generator.floatBetween(0.3, 1);
-        result.twoConsonants = generator.floatBetween(0.3, 1);
+        result.minSize = generator.intBetween(2, 5);
+        result.maxSize = result.minSize + generator.intBetween(result.minSize + 5, result.minSize * 2 + 5);
+        result.prefixProbability = generator.floatBetween(0.4, 1);
+        result.postfixProbability = generator.floatBetween(0.4, 1);
+        result.repeatingSyllables = generator.random();
+        result.repeatingLetters = generator.random();
+        result.twoVowels = generator.random();
+        result.twoConsonants = generator.random();
         result.capitalize = true;
 
         result.vowels = Helpers.getRandomUniqueItems(this.vowels, generator.intBetween(this.vowels.length / 2, this.vowels.length), generator); 
@@ -145,8 +146,8 @@ function OptionsGenerator (vowels, consonants) {
         try {
             var generator = new FableNames(result);
             generator.get();
-        } catch {
-            return this.get();
+        } catch (ex) {
+            return this.get(seed ? seed + 1 : undefined);
         }
 
         return result;
