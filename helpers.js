@@ -1,7 +1,7 @@
 function getRandomUniqueItem (availableItems, alreadyChosenItems, generator) {
     var item = undefined;
     do {
-        item = availableItems[generator(availableItems.length)];
+        item = availableItems[generator.intBetween(0, availableItems.length - 1)];
     } while (alreadyChosenItems.indexOf(item) !== -1);
     return item;
 }

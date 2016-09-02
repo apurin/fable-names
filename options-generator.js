@@ -1,7 +1,5 @@
 var RandomSeed = require('random-seed');
 var Helpers = require('./helpers.js');
-var FableNames = require('./fable-names.js');
-
 
 function makeDictionaryWeighted(dict, generator) {
     var keys = Object.keys(dict);
@@ -62,7 +60,7 @@ function generateSyllables(options, consonants, generator) {
     addSyllable(generator.intBetween(0, 5), [getC, getC, getV, getC]);
     addSyllable(generator.intBetween(0, 5), [getC, getV, getC, getC]);
 
-    return makeDictionaryWeighted(result, generator);    
+    return result; // makeDictionaryWeighted(result, generator);    
 }
 
 function generateSuffixes(generator, maxSyllables, options, consonants) {
@@ -107,7 +105,7 @@ function generateSuffixes(generator, maxSyllables, options, consonants) {
         }
     }
 
-    return makeDictionaryWeighted(suffixes, generator);
+    return suffixes;// makeDictionaryWeighted(suffixes, generator);
 }
 
 function OptionsGenerator (vowels, consonants) {   
@@ -122,10 +120,10 @@ function OptionsGenerator (vowels, consonants) {
 
         var result = {};      
 
-        result.minSize = generator.intBetween(2, 5);
-        result.maxSize = result.minSize + generator.intBetween(result.minSize + 5, result.minSize * 2 + 5);
-        result.prefixProbability = generator.floatBetween(0.4, 1);
-        result.postfixProbability = generator.floatBetween(0.4, 1);
+        result.minSize = generator.intBetween(2, 4);
+        result.maxSize = result.minSize + generator.intBetween(result.minSize + 3, result.minSize * 2 + 5);
+        result.prefixProbability = generator.floatBetween(0.3, 1);
+        result.postfixProbability = generator.floatBetween(0.5, 1);
         result.repeatingSyllables = generator.random();
         result.repeatingLetters = generator.random();
         result.twoVowels = generator.random();
@@ -141,14 +139,6 @@ function OptionsGenerator (vowels, consonants) {
 
         result.verifyRules = undefined;
         result.forbiddenPattern = undefined;
-
-        // check if it can generate names
-        try {
-            var generator = new FableNames(result);
-            generator.get();
-        } catch (ex) {
-            return this.get(seed ? seed + 1 : undefined);
-        }
 
         return result;
     }

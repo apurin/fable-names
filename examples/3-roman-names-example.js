@@ -6,11 +6,8 @@ var romanNames = ["AELIA", "AELIANA", "AELIANUS", "AELIUS", "AEMILIA", "AEMILIAN
 describe('Roman names example', function () {
 
     it('Analyzing and printing 10 roman-ish names', function() {
-        // Creating analyzer
-        var analyzer = new Analyzer();
-
         // Analyzing array of real roman names
-        var romanNamesOptions = analyzer.analyze(romanNames);
+        var romanNamesOptions = FableNames.analyze(romanNames);
 
         // Creating name generator with roman specific
         var romanNamesGenerator = new FableNames(romanNamesOptions);

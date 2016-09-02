@@ -4,16 +4,20 @@ var Analyzer = require('./analyzer.js');
 var OptionsGenerator = require('./options-generator.js');
 var Helpers = require('./helpers.js');
 
-function FableNames (options) {
-    this.options = this.fixOptions(options);
+function FableNames (options) {    
+    this.options = options 
+        ? this.fixOptions(options) 
+        : FableNames.generateOptions();
+
     this.failedAttempts = {
         count: 0,
-        max: 100,
+        max: 300,
         forbiddenPattern: 0,
         wrongSize: 0,
         verifyRules: 0,
         checkWord: 0
     }
+
     this.onAttemptSucceeded = function () {
         this.failedAttempts.count = 0;
         this.failedAttempts.forbiddenPattern = 0;
@@ -23,14 +27,28 @@ function FableNames (options) {
     }
 }
 
-FableNames.Analyzer = Analyzer;
-FableNames.OptionsGenerator = OptionsGenerator;
+FableNames.analyze = function (words, vowels) {
+    var analyzer = new Analyzer(vowels);
+    return analyzer.analyze(words);
+};
+
+FableNames.generateOptions = function (seed, vowels, consonants) {
+    do {
+        try {
+            var optionsGenerator = new OptionsGenerator(vowels, consonants);
+            var options = optionsGenerator.get(seed);
+            new FableNames(options).get(50);
+            
+            return options;
+        } catch (ex) {
+            if (seed) seed++; // generate other options if this can't produce words         
+        }
+    } while (true);
+}
 
 FableNames.prototype.fixOptions = function (options) {
     var result = {};
     
-    options = options ? options : {};
-
     result.minSize = options.minSize ? options.minSize : 2;
     result.maxSize = options.maxSize ? options.maxSize : result.minSize * 6;
     result.prefixProbability = options.prefixProbability ? options.prefixProbability : 0.5;
@@ -64,10 +82,10 @@ function getRandomWeighted(weightedDict) {
     return getRandomWeighted(weightedDict);        
 }
 
-FableNames.prototype.get = function () {
+FableNames.prototype.get = function (attempts) {
     this.failedAttempts.count ++;
 
-    if (this.failedAttempts.count > this.failedAttempts.max) 
+    if (this.failedAttempts.count > (attempts ? attempts : this.failedAttempts.max)) 
         throw new Error("It is impossible to match given rules, here are resons why attempts failed:\r\n" + 
             "Can't fit proper size: " + this.failedAttempts.wrongSize + "\r\n" + 
             "Matches forbidden pattern: " + this.failedAttempts.forbiddenPattern + "\r\n" + 

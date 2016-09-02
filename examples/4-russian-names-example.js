@@ -6,11 +6,8 @@ var russianNames = ["Авдей", "Авксентий", "Агафон", "Але�
 describe('Russian male names example', function () {
 
     it('Analyzing and printing 10 russian-ish names', function() {
-        // Creating analyzer, providing russian vowels as an arument
-        var analyzer = new Analyzer("ауоыиэяюёе");
-
         // Analyzing array of real russian names
-        var russianNamesOptions = analyzer.analyze(russianNames);
+        var russianNamesOptions = FableNames.analyze(russianNames, "ауоыиэяюёе");
 
         // Adding additional pattern to skip unrealistic results
         russianNamesOptions.forbiddenPattern = /^[ъьйы]|й.*й|[ауоыиэяюёе]ь|й[ауоыиэяюёе]|йь/i;
