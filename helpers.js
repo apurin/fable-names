@@ -1,21 +1,29 @@
-function getRandomUniqueItem (availableItems, alreadyChosenItems, generator) {
+function intBetween(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function floatBetween(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function getRandomUniqueItem (availableItems, alreadyChosenItems) {
     var item = undefined;
     do {
-        item = availableItems[generator.intBetween(0, availableItems.length - 1)];
+        item = availableItems[intBetween(0, availableItems.length - 1)];
     } while (alreadyChosenItems.indexOf(item) !== -1);
     return item;
 }
 
-function getRandomUniqueItems (availableItems, count, generator) {
+function getRandomUniqueItems (availableItems, count) {
     var result = [];
     for (var i = 0; i < count; i++) 
-        result.push(getRandomUniqueItem(availableItems, result, generator));
+        result.push(getRandomUniqueItem(availableItems, result));
     
     return result;
 }
 
-function getRandomItem (array, generator) {
-    return array[generator.intBetween(0, array.length - 1)];
+function getRandomItem (array) {
+    return array[intBetween(0, array.length - 1)];
 }
 
 function checkWord (word, vowels, repeatingLetters, twoVowels, twoConsonants) {
@@ -51,6 +59,8 @@ function checkWord (word, vowels, repeatingLetters, twoVowels, twoConsonants) {
 }
 
 module.exports = {
+    intBetween: intBetween,
+    floatBetween: floatBetween,
     getRandomUniqueItem: getRandomUniqueItem,
     getRandomUniqueItems: getRandomUniqueItems,
     getRandomItem: getRandomItem,

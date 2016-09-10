@@ -32,16 +32,16 @@ FableNames.analyze = function (words, vowels) {
     return analyzer.analyze(words);
 };
 
-FableNames.generateOptions = function (seed, vowels, consonants) {
+FableNames.generateOptions = function (vowels, consonants) {
     do {
         try {
             var optionsGenerator = new OptionsGenerator(vowels, consonants);
-            var options = optionsGenerator.get(seed);
+            var options = optionsGenerator.get();
             new FableNames(options).get(50);
             
             return options;
         } catch (ex) {
-            if (seed) seed++; // generate other options if this can't produce words         
+            // generate other options if this can't produce words         
         }
     } while (true);
 }

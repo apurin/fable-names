@@ -1,12 +1,11 @@
-var RandomSeed = require('random-seed');
 var Helpers = require('./helpers.js');
 
-function makeDictionaryWeighted(dict, generator) {
+function makeDictionaryWeighted(dict) {
     var keys = Object.keys(dict);
 
     var values = [];    
     for (var index = 0; index < keys.length - 1; index++) 
-        values.push(generator.random());    
+        values.push(Math.random());    
     values.sort();
 
     var prev = 0;  
@@ -23,11 +22,11 @@ function makeDictionaryWeighted(dict, generator) {
     return dict;
 }
 
-function generateSyllables(options, consonants, generator) {
+function generateSyllables(options, consonants) {
     var result = {};
 
-    var getV = () => Helpers.getRandomItem(options.vowels, generator);
-    var getC = () => Helpers.getRandomItem(consonants, generator);
+    var getV = () => Helpers.getRandomItem(options.vowels);
+    var getC = () => Helpers.getRandomItem(consonants);
 
     var addSyllable = function(count, funcs) {
         for (var index = 0; index < count; index++) {
@@ -51,28 +50,28 @@ function generateSyllables(options, consonants, generator) {
         }               
     }
 
-    addSyllable(generator.intBetween(Math.min(options.vowels.length, 3), options.vowels.length), [getV]);
-    addSyllable(generator.intBetween(0, 3), [getV, getV]);
-    addSyllable(generator.intBetween(10, 25), [getC, getV]);
-    addSyllable(generator.intBetween(10, 25), [getV, getC]);
-    addSyllable(generator.intBetween(0, 10), [getC, getV, getC]);
-    addSyllable(generator.intBetween(0, 10), [getC, getC, getV]);
-    addSyllable(generator.intBetween(0, 5), [getC, getC, getV, getC]);
-    addSyllable(generator.intBetween(0, 5), [getC, getV, getC, getC]);
+    addSyllable(Helpers.intBetween(Math.min(options.vowels.length, 3), options.vowels.length), [getV]);
+    addSyllable(Helpers.intBetween(0, 3), [getV, getV]);
+    addSyllable(Helpers.intBetween(10, 25), [getC, getV]);
+    addSyllable(Helpers.intBetween(10, 25), [getV, getC]);
+    addSyllable(Helpers.intBetween(0, 10), [getC, getV, getC]);
+    addSyllable(Helpers.intBetween(0, 10), [getC, getC, getV]);
+    addSyllable(Helpers.intBetween(0, 5), [getC, getC, getV, getC]);
+    addSyllable(Helpers.intBetween(0, 5), [getC, getV, getC, getC]);
 
-    return result; // makeDictionaryWeighted(result, generator);    
+    return result;
 }
 
-function generateSuffixes(generator, maxSyllables, options, consonants) {
+function generateSuffixes(maxSyllables, options, consonants) {
     var syllables = Object.keys(options.syllables);
     var suffixes = {};
-    var numberOfSuffixes = generator.intBetween(5, 15);
+    var numberOfSuffixes = Helpers.intBetween(5, 15);
 
     for (var i = 0; i < numberOfSuffixes; i++) {
         var suffix = "";
-        var numberOfSyllables = generator.intBetween(1, maxSyllables);
+        var numberOfSyllables = Helpers.intBetween(1, maxSyllables);
         for (var syllableIndex = 0; syllableIndex < numberOfSyllables; syllableIndex++) 
-            suffix += Helpers.getRandomItem(syllables, generator);        
+            suffix += Helpers.getRandomItem(syllables);        
 
         // this suffix is already added
         if (suffixes[suffix] !== undefined) {
@@ -89,13 +88,13 @@ function generateSuffixes(generator, maxSyllables, options, consonants) {
         suffixes[suffix] = NaN;
 
         // Add similar suffix
-        if (suffix.length > 2 && generator.random() < 0.5) {
+        if (suffix.length > 2 && Math.random() < 0.5) {
             var letters = suffix.split("");
 
-            var indexToChange = generator.intBetween(0, letters.length - 1);
+            var indexToChange = Helpers.intBetween(0, letters.length - 1);
             letters[indexToChange] = options.vowels.indexOf(letters[indexToChange]) !== -1 
-                ? Helpers.getRandomItem(options.vowels, generator)
-                : Helpers.getRandomItem(consonants, generator);
+                ? Helpers.getRandomItem(options.vowels)
+                : Helpers.getRandomItem(consonants);
 
             var similarSuffix = letters.join("");
             if (suffixes[similarSuffix] === undefined && Helpers.checkWord(similarSuffix, options.vowels, options.repeatingLetters, options.twoVowels, options.twoConsonants)) {
@@ -105,7 +104,7 @@ function generateSuffixes(generator, maxSyllables, options, consonants) {
         }
     }
 
-    return suffixes;// makeDictionaryWeighted(suffixes, generator);
+    return suffixes;
 }
 
 function OptionsGenerator (vowels, consonants) {   
@@ -115,27 +114,25 @@ function OptionsGenerator (vowels, consonants) {
     this.consonants = consonants ? consonants : "bcdfghjklmnpqrstvxzw";
     this.consonants = typeof this.consonants === 'string' ? this.consonants.split("") : this.consonants;
 
-    this.get = function (seed) {
-        var generator = new RandomSeed(seed);
-
+    this.get = function () {
         var result = {};      
 
-        result.minSize = generator.intBetween(2, 4);
-        result.maxSize = result.minSize + generator.intBetween(result.minSize + 3, result.minSize * 2 + 5);
-        result.prefixProbability = generator.floatBetween(0.3, 1);
-        result.postfixProbability = generator.floatBetween(0.5, 1);
-        result.repeatingSyllables = generator.random();
-        result.repeatingLetters = generator.random();
-        result.twoVowels = generator.random();
-        result.twoConsonants = generator.random();
+        result.minSize = Helpers.intBetween(2, 4);
+        result.maxSize = result.minSize + Helpers.intBetween(result.minSize + 3, result.minSize * 2 + 5);
+        result.prefixProbability = Helpers.floatBetween(0.3, 1);
+        result.postfixProbability = Helpers.floatBetween(0.5, 1);
+        result.repeatingSyllables = Math.random();
+        result.repeatingLetters = Math.random();
+        result.twoVowels = Math.random();
+        result.twoConsonants = Math.random();
         result.capitalize = true;
 
-        result.vowels = Helpers.getRandomUniqueItems(this.vowels, generator.intBetween(this.vowels.length / 2, this.vowels.length), generator); 
-        var consonants = Helpers.getRandomUniqueItems(this.consonants, generator.intBetween(this.consonants.length / 2, this.consonants.length), generator); 
+        result.vowels = Helpers.getRandomUniqueItems(this.vowels, Helpers.intBetween(this.vowels.length / 2, this.vowels.length)); 
+        var consonants = Helpers.getRandomUniqueItems(this.consonants, Helpers.intBetween(this.consonants.length / 2, this.consonants.length)); 
 
-        result.syllables = generateSyllables(result, consonants, generator);  
-        result.prefixes = generateSuffixes(generator, 2, result, consonants);          
-        result.postfixes = generateSuffixes(generator, 4, result, consonants);
+        result.syllables = makeDictionaryWeighted(generateSyllables(result, consonants));
+        result.prefixes = makeDictionaryWeighted(generateSuffixes(2, result, consonants));
+        result.postfixes = makeDictionaryWeighted(generateSuffixes(4, result, consonants));
 
         result.verifyRules = undefined;
         result.forbiddenPattern = undefined;
