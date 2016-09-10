@@ -1,8 +1,8 @@
-[![Build Status](https://api.travis-ci.org/anpur/fable-names.svg?branch=master)](https://travis-ci.org/anpur/fable-names)
-[![NPM:](https://img.shields.io/npm/v/fable-names.svg)](https://www.npmjs.com/package/fable-names)
-
 # fable-names
 FableNames is a module which can generate infinite number of names, totally random or similar to some example group (like Elven names, Irish names, Japanese names, etc.).
+
+[![Build Status](https://api.travis-ci.org/anpur/fable-names.svg?branch=master)](https://travis-ci.org/anpur/fable-names)
+[![NPM:](https://img.shields.io/npm/v/fable-names.svg)](https://www.npmjs.com/package/fable-names)
 
 To install:
 
