@@ -1,13 +1,13 @@
 {
-  "name": "name-generator",
-  "version": "1.0.0",
+  "name": "fable-names",
+  "version": "1.0.1",
   "description": "",
-  "main": "name-generator.js",
+  "main": "fable-names.js",
   "scripts": {
     "test": "mocha tests/*-tests.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Anton Purin",
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.5.0",

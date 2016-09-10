@@ -1,5 +1,8 @@
+[![Build Status](https://api.travis-ci.org/anpur/fable-names.svg?branch=master)](https://travis-ci.org/anpur/fable-names)
+[![NPM:](https://img.shields.io/npm/v/fable-names.svg)](https://www.npmjs.com/package/fable-names)
+
 # fable-names
-FableNames is a module which can generate infinite number of names, totally random or similar to some example group (like *Elven names*, *Irish names*, *Japanese names*, etc.).
+FableNames is a module which can generate infinite number of names, totally random or similar to some example group (like Elven names, Irish names, Japanese names, etc.).
 
 To install:
 
@@ -23,7 +26,7 @@ See full example at [examples/1-random-names-example.js](https://github.com/anpu
     var FableNames = require('fable-names');
     
     // Array of real Japanese names
-    var japaneseNames = ["Sato", "Suzuki", "Takahashi", "Tanaka", "Watanabe", "Ito", "Nakamura", "Kobayashi", "Yamamoto", "Kato", "Yoshida", "Yamada", "Sasaki", "Yamaguchi", "Matsumoto", "Inoue", "Kimura", "Shimizu", "Hayashi", "Saito", "Saito", "Yamazaki", "Yamasaki", "Nakajima", "Nakashima", "Mori", "Abe", "Ikeda", "Hashimoto", "Ishikawa", "Yamashita", "Ogawa", "Ishii", "Hasegawa", "Goto", "Okada", "Kondo", "Maeda", "Fujita", "Endo", "Aoki", "Sakamoto", "Murakami", "ota", "Kaneko", "Fujii", "Fukuda", "Nishimura", "Miura", "Takeuchi", "Nakagawa", "Okamoto", "Matsuda", "Harada", "Nakano"];
+    var japaneseNames = ["Sato", "Suzuki", "Takahashi", "Tanaka", "Watanabe", ...];
     
     var japaneseNamesOptions = FableNames.analyze(japaneseNames); 
 
