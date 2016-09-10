@@ -9,6 +9,10 @@ describe('Roman names example', function () {
         // Analyzing array of real roman names
         var romanNamesOptions = FableNames.analyze(romanNames);
 
+        // Injecting verification rule, which will check that all generated names will unique
+        var usedNames = [];
+        romanNamesOptions.verifyRules = (name, options) => usedNames.indexOf(name) === -1;
+
         // Creating name generator with roman specific
         var romanNamesGenerator = new FableNames(romanNamesOptions);
 
@@ -16,6 +20,8 @@ describe('Roman names example', function () {
 
             // generate name
             var newName = romanNamesGenerator.get();
+
+            usedNames.push(newName);
 
             console.log("\t" + newName);
         }

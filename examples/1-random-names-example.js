@@ -2,20 +2,20 @@ var FableNames = require('../fable-names.js');
 
 describe('Random names example', function () {
 
-    it('Creating a random names with male, female and surname specific', function() {
-        // Creating corresponding generators
-        var firstnameGenerator = new FableNames(); // generating random options
+    it('Creating a random names with male, female and surname specific', function() {        
+        // generating random options by default
+        var generator = new FableNames(); 
 
-        var randomOptions = FableNames.generateOptions();
-        var surnameGenerator = new FableNames(); 
+        // Alternative way of creating random options, so you can alter them:
+        // var randomOptions = FableNames.generateOptions();
+        // var generator = new FableNames(randomOptions); 
 
         // Generate 5 male names
         for (var index = 0; index < 10; index++) {
 
-            var firstname = firstnameGenerator.get();
-            var surname = surnameGenerator.get();
+            var name = generator.get();
 
-            console.log("\t" + firstname + " " + surname);
+            console.log("\t" + name);
         }        
     });    
 });
