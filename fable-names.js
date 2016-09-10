@@ -85,7 +85,7 @@ function getRandomWeighted(weightedDict) {
 FableNames.prototype.get = function (attempts) {
     this.failedAttempts.count ++;
 
-    if (this.failedAttempts.count > (attempts ? attempts : this.failedAttempts.max)) 
+    if (this.failedAttempts.count > (attempts != undefined ? attempts : this.failedAttempts.max)) 
         throw new Error("It is impossible to match given rules, here are resons why attempts failed:\r\n" + 
             "Can't fit proper size: " + this.failedAttempts.wrongSize + "\r\n" + 
             "Matches forbidden pattern: " + this.failedAttempts.forbiddenPattern + "\r\n" + 
