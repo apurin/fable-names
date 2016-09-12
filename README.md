@@ -8,6 +8,8 @@ To install:
 
     npm install fable-names --save
 
+Check it out live in Tonic: [tonicdev.com/npm/fable-names](https://tonicdev.com/npm/fable-names). 
+
 ## Random
 When you're creating new `FableNames` instance without options it automatically generates some random options: 
 
