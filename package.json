@@ -1,6 +1,6 @@
 {
   "name": "fable-names",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "",
   "main": "fable-names.js",
   "scripts": {
@@ -22,5 +22,6 @@
   "bugs": {
     "url": "https://github.com/anpur/fable-names/issues"
   },
-  "homepage": "https://github.com/anpur/fable-names"
+  "homepage": "https://github.com/anpur/fable-names",
+  "tonicExampleFilename": "examples/tonic-example.js"
 }
